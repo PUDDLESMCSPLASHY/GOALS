@@ -1,3 +1,818 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2026 Sales Goal Tracker</title><style>:root{--bg:#0f1117;--card:#1a1d27;--border:#2a2d3a;--text:#e4e4e7;--muted:#71717a;--accent:#3b82f6;--green:#22c55e;--amber:#f59e0b;--red:#ef4444;--purple:#a855f7;--pink:#ec4899;--cyan:#06b6d4}*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}#lockScreen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:20px}#lockScreen.hidden{display:none}.lock-icon{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.8rem;margin-bottom:24px}.lock-title{font-size:1.4rem;font-weight:700;margin-bottom:6px;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.lock-subtitle{color:var(--muted);font-size:.85rem;margin-bottom:28px}.pin-display{display:flex;gap:12px;margin-bottom:24px}.pin-dot{width:16px;height:16px;border-radius:50%;border:2px solid var(--border);transition:all .2s}.pin-dot.filled{background:var(--accent);border-color:var(--accent)}.pin-dot.error{background:var(--red);border-color:var(--red);animation:pinShake .4s}@keyframes pinShake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}.pin-pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:260px}.pin-btn{width:76px;height:76px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:1.5rem;font-weight:600;cursor:pointer}.pin-btn:hover{background:rgba(59,130,246,.15);border-color:var(--accent)}.pin-btn.backspace{font-size:1.2rem;color:var(--muted)}.pin-btn.empty{visibility:hidden}.lock-error{color:var(--red);font-size:.8rem;margin-top:16px}#appMain{display:none;padding:20px}#appMain.visible{display:block}.header{text-align:center;margin-bottom:20px}.header h1{font-size:1.8rem;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent}.header p{color:var(--muted);margin-top:4px;font-size:.9rem}.top-buttons{display:flex;justify-content:center;gap:10px;margin-bottom:20px}.btn-goals{background:var(--card);border:1px solid var(--border);color:var(--text);padding:8px 16px;border-radius:8px;cursor:pointer}.btn-goals:hover{border-color:var(--accent)}.bonus-bar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 24px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}.bonus-bar .label{font-size:.85rem;color:var(--muted)}.bonus-bar .value{font-size:1.4rem;font-weight:700}.threshold{font-size:.8rem;padding:4px 10px;border-radius:20px;font-weight:600}.threshold.on-track{background:rgba(34,197,94,.15);color:var(--green)}.threshold.at-risk{background:rgba(245,158,11,.15);color:var(--amber)}.threshold.behind{background:rgba(239,68,68,.15);color:var(--red)}.controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:10px}.month-tabs{display:flex;gap:4px;flex-wrap:wrap}.month-tabs button{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:.75rem}.month-tabs button.active,.month-tabs button:hover{background:var(--accent);color:#fff;border-color:var(--accent)}.month-tabs button.quarter{background:rgba(168,85,247,.15);border-color:rgba(168,85,247,.3);color:var(--purple)}.month-tabs button.quarter.active{background:var(--purple);color:#fff}.month-tabs button.year{background:rgba(34,197,94,.15);color:var(--green)}.month-tabsbutton.year.active{background:var(--green);color:#fff}.btn-add{background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;padding:10px 22px;border-radius:10px;font-weight:600;cursor:pointer}.meters-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:24px}@media(max-width:700px){.meters-grid{grid-template-columns:1fr}}.meter-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}.meter-card h3{font-size:.95rem;margin-bottom:4px}.meter-card .goal-line{font-size:.8rem;color:var(--muted);margin-bottom:14px}.meter-container{position:relative;width:100%;height:42px;background:#22252f;border-radius:10px;margin-bottom:8px}.meter-fill{display:flex;height:100%;border-radius:10px;overflow:hidden}.meter-segment{height:100%;cursor:pointer;min-width:3px;position:relative}.meter-segment:hover{filter:brightness(1.3)}.meter-tooltip{display:none;position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);background:#2a2d3a;border:1px solid #3a3d4a;border-radius:8px;padding:10px;font-size:.78rem;white-space:nowrap;z-index:100}.meter-segment:hover .meter-tooltip{display:block}.goal-marker{position:absolute;top:-4px;bottom:-4px;width:2px;background:var(--amber);z-index:5}.goal-marker::after{content:'95%';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.65rem;color:var(--amber)}.meter-stats{display:flex;justify-content:space-between;font-size:.8rem}.meter-stats .achieved{color:var(--green);font-weight:600}.meter-stats .remaining{color:var(--muted)}.revenue-breakdown{font-size:.75rem;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--border)}.revenue-breakdown span{margin-right:12px}.bookings-section{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}.bookings-table{width:100%;border-collapse:collapse;font-size:.8rem}.bookings-table th{text-align:left;color:var(--muted);padding:8px 10px;border-bottom:1px solid var(--border);font-size:.75rem;text-transform:uppercase}.bookings-table td{padding:10px;border-bottom:1px solid #1f2230}.segment-badge{padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600;text-transform:uppercase}.segment-badge.smerf{background:rgba(168,85,247,.15);color:var(--purple)}.segment-badge.corporate{background:rgba(59,130,246,.15);color:var(--accent)}.segment-badge.government{background:rgba(6,182,212,.15);color:var(--cyan)}.type-badge{padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:600}.type-badge.rooms{background:rgba(34,197,94,.15);color:var(--green)}.type-badge.events{background:rgba(236,72,153,.15);color:var(--pink)}.type-badge.both{background:rgba(245,158,11,.15);color:var(--amber)}.action-btn{background:0 0;border:none;color:var(--muted);cursor:pointer;padding:2px 6px;border-radius:4px}.action-btn:hover{background:rgba(59,130,246,.1);color:var(--accent)}.action-btn.delete:hover{color:var(--red)}.empty-state{text-align:center;padding:40px;color:var(--muted)}.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;justify-content:center;align-items:center;padding:20px}.modal-overlay.open{display:flex}.modal{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative}.modal h2{font-size:1.2rem;margin-bottom:20px}.modal-close{position:absolute;top:16px;right:16px;background:0 0;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}.form-group{margin-bottom:14px}.form-group label{display:block;font-size:.8rem;color:var(--muted);margin-bottom:5px}.form-group input,.form-group select{width:100%;padding:10px 12px;background:#22252f;border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.9rem}.form-group input:focus{border-color:var(--accent)}.radio-group{display:flex;gap:8px;margin-bottom:16px}.radio-option{flex:1;position:relative}.radio-optioninput{position:absolute;opacity:0}.radio-option label{display:block;text-align:center;padding:10px 8px;background:#22252f;border:2px solid var(--border);border-radius:10px;cursor:pointer;font-size:.82rem;color:var(--muted)}.radio-option input:checked+label{border-color:var(--accent);background:rgba(59,130,246,.1);color:var(--text)}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn-save{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--purple));color:#fff;border:none;border-radius:10px;font-weight:600;cursor:pointer;margin-top:8px}.conditional-fields{display:none}.conditional-fields.visible{display:block}.export-row{display:flex;gap:8px;margin-top:12px;justify-content:flex-end}.btn-sm{background:var(--card);border:1px solid var(--border);color:var(--muted);padding:6px 14px;border-radius:6px;font-size:.75rem;cursor:pointer}.btn-sm:hover{border-color:var(--accent)}.pct-label{font-size:1.1rem;font-weight:700;text-align:right;margin-top:2px}.calc-preview{background:#22252f;border:1px solid var(--border);border-radius:8px;padding:12px;margin:12px 0;font-size:.8rem}.calc-preview .calc-line{display:flex;justify-content:space-between;margin-bottom:4px}.calc-preview .calc-line.total{border-top:1px solid var(--border);padding-top:8px;margin-top:8px;font-weight:700;color:var(--green)}.goals-grid{display:grid;gap:12px}.goal-row{display:grid;grid-template-columns:80px 1fr 1fr;gap:10px;align-items:center}.goal-row .month-label{font-weight:600;font-size:.85rem}.goals-section-title{font-size:.9rem;font-weight:600;margin:16px 0 10px;color:var(--accent)}</style></head><body>
-<div id="lockScreen"><div class="lock-icon">🔒</div><div class="lock-title">2026 Sales Tracker</div><div class="lock-subtitle">Enter PIN to continue</div><div class="pin-display"><div class="pin-dot" id="dot0"></div><div class="pin-dot" id="dot1"></div><div class="pin-dot" id="dot2"></div><div class="pin-dot" id="dot3"></div></div><div class="pin-pad"><button class="pin-btn" onclick="pinPress('1')">1</button><button class="pin-btn" onclick="pinPress('2')">2</button><button class="pin-btn" onclick="pinPress('3')">3</button><button class="pin-btn" onclick="pinPress('4')">4</button><button class="pin-btn" onclick="pinPress('5')">5</button><button class="pin-btn" onclick="pinPress('6')">6</button><button class="pin-btn" onclick="pinPress('7')">7</button><button class="pin-btn" onclick="pinPress('8')">8</button><button class="pin-btn" onclick="pinPress('9')">9</button><button class="pin-btn empty"></button><button class="pin-btn" onclick="pinPress('0')">0</button><button class="pin-btn backspace" onclick="pinBackspace()">⌫</button></div><div class="lock-error" id="lockError"></div></div><div id="appMain"><div class="header"><h1>2026 Sales Goal Tracker</h1><p>Individual Group Rooms & Catering Revenue — The Compton</p></div><div class="top-buttons"><button class="btn-goals" onclick="openGoalsModal()">⚙️ Edit Goals</button></div><div class="bonus-bar"><div><div class="label">Weighted Achievement</div><div class="value" id="weightedPct">0.0%</div></div><div><div class="label">Room Revenue (Net)</div><div class="value" id="totalRoomRev">$0</div></div><div><div class="label">Catering Revenue</div><div class="value" id="totalCatRev">$0</div></div><div><span class="threshold behind" id="bonusStatus">Below 95% Threshold</span></div></div><div class="controls"><div class="month-tabs" id="monthTabs"></div><button class="btn-add" onclick="openModal()">+ New Booking</button></div><div class="meters-grid"><div class="meter-card"><h3>🏨 Individual Group Room Revenue</h3><div class="goal-line" id="roomGoalLabel">Goal: $0 — Weight: 35%</div><div class="meter-container"><div class="meter-fill" id="roomMeter"></div><div class="goal-marker" style="left:95%"></div></div><div class="meter-stats"><span class="achieved" id="roomAchieved">$0 (0%)</span><span class="remaining" id="roomRemaining">$0 remaining</span></div><div class="revenue-breakdown" id="roomBreakdown"><span>Gross: $0</span><span>Net (80%): $0</span></div><div class="pct-label" id="roomPct">0%</div></div><div class="meter-card"><h3>🍽️ Individual Catering Revenue</h3><div class="goal-line" id="catGoalLabel">Goal: $0 — Weight: 25%</div><div class="meter-container"><div class="meter-fill" id="catMeter"></div><div class="goal-marker" style="left:95%"></div></div><div class="meter-stats"><span class="achieved" id="catAchieved">$0 (0%)</span><span class="remaining" id="catRemaining">$0 remaining</span></div><div class="pct-label" id="catPct">0%</div></div></div><div class="bookings-section"><h3>Bookings Log</h3><div id="bookingsBody"></div><div class="export-row"><button class="btn-sm" onclick="exportCSV()">📤 Export CSV</button><button class="btn-sm" onclick="clearAll()">🗑️ Clear All</button></div></div></div><div class="modal-overlay" id="modal"><div class="modal"><button class="modal-close" onclick="closeModal()">✕</button><h2 id="modalTitle">Add New Booking</h2><div class="form-group"><label>Group Name</label><input type="text" id="fGroupName" placeholder="e.g. Walmart Regional Team"></div><div class="form-group"><label>Segment</label><select id="fSegment"><option value="corporate">Corporate</option><option value="smerf">SMERF</option><option value="government">Government</option></select></div><div class="form-row"><div class="form-group"><label>Date of Inquiry</label><input type="date" id="fInquiryDate"></div><div class="form-group"><label>Date Closed</label><input type="date" id="fCloseDate"></div></div><div class="form-group"><label>Booking Type</label><div class="radio-group"><divclass="radio-option"><input type="radio" name="bookingType" id="typeRooms" value="rooms" checked><label for="typeRooms">Rooms Only</label></div><div class="radio-option"><input type="radio" name="bookingType" id="typeEvents" value="events"><label for="typeEvents">Event Only</label></div><div class="radio-option"><input type="radio" name="bookingType" id="typeBoth" value="both"><label for="typeBoth">Rooms + Event</label></div></div></div><div class="conditional-fields visible" id="roomFields"><div class="form-row"><div class="form-group"><label>ADR ($)</label><input type="number" id="fADR" placeholder="0.00" oninput="updateCalcPreview()"></div><div class="form-group"><label>Room Nights</label><input type="number" id="fRoomNights" placeholder="0" oninput="updateCalcPreview()"></div></div><div class="calc-preview"><div class="calc-line"><span>Gross Revenue (ADR × Nights)</span><span id="calcGross">$0</span></div><div class="calc-line total"><span>Net Revenue (80% attrition)</span><span id="calcNet">$0</span></div></div></div><div class="conditional-fields" id="eventFields"><div class="form-row"><div class="form-group"><label>Room Rental ($)</label><input type="number" id="fRoomRental" placeholder="0.00"></div><div class="form-group"><label>F&B Minimum ($)</label><input type="number" id="fFnB" placeholder="0.00"></div></div><div class="form-group"><label>AV Add-Ons ($)</label><input type="number" id="fAV" placeholder="0.00"></div></div><div class="form-group"><label>Booking Month</label><select id="fMonth"><option value="jan">January</option><option value="feb">February</option><option value="mar">March</option><option value="apr">April</option><option value="may">May</option><option value="jun">June</option><option value="jul">July</option><option value="aug">August</option><option value="sep">September</option><option value="oct">October</option><option value="nov">November</option><option value="dec">December</option></select></div><button class="btn-save" onclick="saveBooking()">Save Booking</button></div></div><div class="modal-overlay" id="goalsModal"><div class="modal" style="max-width:600px"><button class="modal-close" onclick="closeGoalsModal()">✕</button><h2>Edit Monthly Goals</h2><p style="font-size:.8rem;color:var(--muted);margin-bottom:16px">Set your monthly goals. Quarterly and yearly totals auto-calculate.</p><div class="goals-grid" id="goalsGrid"></div><button class="btn-save" onclick="saveGoals()" style="margin-top:20px">Save Goals</button></div></div>
-<script>const CORRECT_PIN='4273';let pinEntry='';function pinPress(d){if(pinEntry.length>=4)return;pinEntry+=d;updateDots();if(pinEntry.length===4)setTimeout(()=>pinEntry===CORRECT_PIN?unlock():showPinError(),200)}function pinBackspace(){if(!pinEntry.length)return;pinEntry=pinEntry.slice(0,-1);updateDots();document.getElementById('lockError').textContent=''}function updateDots(){for(let i=0;i<4;i++)document.getElementById('dot'+i).className='pin-dot'+(i<pinEntry.length?' filled':'')}function showPinError(){for(let i=0;i<4;i++)document.getElementById('dot'+i).className='pin-dot error';document.getElementById('lockError').textContent='Incorrect PIN';setTimeout(()=>{pinEntry='';updateDots()},600)}function unlock(){document.getElementById('lockScreen').classList.add('hidden');document.getElementById('appMain').classList.add('visible');render()}document.addEventListener('keydown',e=>{if(!document.getElementById('lockScreen').classList.contains('hidden'))return;if(e.key>='0'&&e.key<='9')pinPress(e.key);else if(e.key==='Backspace')pinBackspace()});const MONTHS=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];const MONTH_NAMES={jan:'January',feb:'February',mar:'March',apr:'April',may:'May',jun:'June',jul:'July',aug:'August',sep:'September',oct:'October',nov:'November',dec:'December'};const QUARTERS={q1:['jan','feb','mar'],q2:['apr','may','jun'],q3:['jul','aug','sep'],q4:['oct','nov','dec']};const DEFAULT_GOALS={rooms:{jan:22308,feb:26154,mar:28462,apr:1,may:1,jun:1,jul:1,aug:1,sep:1,oct:1,nov:1,dec:1},catering:{jan:20831,feb:21503,mar:24863,apr:1,may:1,jun:1,jul:1,aug:1,sep:1,oct:1,nov:1,dec:1},weight:{rooms:0.35,catering:0.25}};let goals=JSON.parse(localStorage.getItem('htl_goals'))||JSON.parse(JSON.stringify(DEFAULT_GOALS));let bookings=JSON.parse(localStorage.getItem('htl_bookings')||'[]');let currentView='q1',editingId=null;const COLORS_ROOMS=['#22c55e','#16a34a','#15803d','#166534','#4ade80','#34d399','#2dd4bf','#06b6d4','#0ea5e9','#3b82f6','#6366f1','#8b5cf6','#a855f7','#c084fc','#d946ef'];const COLORS_CAT=['#ec4899','#f43f5e','#f97316','#f59e0b','#eab308','#fb923c','#fbbf24','#facc15','#a3e635','#84cc16','#22d3ee','#67e8f9','#e879f9','#c084fc','#fb7185'];function saveData(){localStorage.setItem('htl_bookings',JSON.stringify(bookings));localStorage.setItem('htl_goals',JSON.stringify(goals))}function fmt(n){return'$'+Number(n).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0})}function buildTabs(){const c=document.getElementById('monthTabs');let h='';h+='<button onclick="setView(\'jan\')">Jan</button><button onclick="setView(\'feb\')">Feb</button><button onclick="setView(\'mar\')">Mar</button><button class="quarter" onclick="setView(\'q1\')">Q1</button>';h+='<button onclick="setView(\'apr\')">Apr</button><button onclick="setView(\'may\')">May</button><button onclick="setView(\'jun\')">Jun</button><button class="quarter" onclick="setView(\'q2\')">Q2</button>';h+='<button onclick="setView(\'jul\')">Jul</button><button onclick="setView(\'aug\')">Aug</button><button onclick="setView(\'sep\')">Sep</button><button class="quarter" onclick="setView(\'q3\')">Q3</button>';h+='<button onclick="setView(\'oct\')">Oct</button><button onclick="setView(\'nov\')">Nov</button><button onclick="setView(\'dec\')">Dec</button><button class="quarter" onclick="setView(\'q4\')">Q4</button>';h+='<button class="year" onclick="setView(\'year\')">2026</button>';c.innerHTML=h;updateActiveTab()}function updateActiveTab(){document.querySelectorAll('.month-tabs button').forEach(b=>{b.classList.remove('active');if(b.textContent.toLowerCase()===currentView||(currentView==='year'&&b.textContent==='2026'))b.classList.add('active')})}function setView(v){currentView=v;updateActiveTab();render()}function getGoalForView(type,view){if(MONTHS.includes(view))return goals[type][view]||0;if(view.startsWith('q'))return QUARTERS[view].reduce((s,m)=>s+(goals[type][m]||0),0);if(view==='year')returnMONTHS.reduce((s,m)=>s+(goals[type][m]||0),0);return 0}function getMonthsForView(view){if(MONTHS.includes(view))return[view];if(view.startsWith('q'))return QUARTERS[view];if(view==='year')return MONTHS;return[]}function getFiltered(){return bookings.filter(b=>getMonthsForView(currentView).includes(b.month))}function render(){const filtered=getFiltered();let tRG=0,tRN=0,tC=0;filtered.forEach(b=>{if(b.type==='rooms'||b.type==='both'){const g=(b.adr||0)*(b.roomNights||0);tRG+=g;tRN+=g*0.8}if(b.type==='events'||b.type==='both')tC+=(b.roomRental||0)+(b.fnb||0)+(b.av||0)});const rG=getGoalForView('rooms',currentView),cG=getGoalForView('catering',currentView);document.getElementById('totalRoomRev').textContent=fmt(tRN);document.getElementById('totalCatRev').textContent=fmt(tC);const rP=rG>0?tRN/rG*100:0,cP=cG>0?tC/cG*100:0;const wP=(rP*goals.weight.rooms+cP*goals.weight.catering)/(goals.weight.rooms+goals.weight.catering);document.getElementById('weightedPct').textContent=wP.toFixed(1)+'%';const s=document.getElementById('bonusStatus');if(wP>=95){s.className='threshold on-track';s.textContent='✓ Bonus Threshold Met!'}else if(wP>=75){s.className='threshold at-risk';s.textContent='Approaching 95% Threshold'}else{s.className='threshold behind';s.textContent='Below 95% Threshold'}const vL=currentView==='year'?'2026':currentView.toUpperCase();document.getElementById('roomGoalLabel').textContent='Goal: '+fmt(rG)+' ('+vL+') — Weight: 35%';document.getElementById('catGoalLabel').textContent='Goal: '+fmt(cG)+' ('+vL+') — Weight: 25%';buildMeter('roomMeter',filtered.filter(b=>b.type==='rooms'||b.type==='both'),'room',rG,COLORS_ROOMS);document.getElementById('roomAchieved').textContent=fmt(tRN)+' ('+rP.toFixed(1)+'%)';document.getElementById('roomRemaining').textContent=tRN>=rG?'Goal reached!':fmt(rG-tRN)+' remaining';document.getElementById('roomBreakdown').innerHTML='<span>Gross: '+fmt(tRG)+'</span><span>Net (80%): '+fmt(tRN)+'</span>';document.getElementById('roomPct').textContent=rP.toFixed(1)+'%';document.getElementById('roomPct').style.color=rP>=95?'var(--green)':rP>=75?'var(--amber)':'var(--muted)';buildMeter('catMeter',filtered.filter(b=>b.type==='events'||b.type==='both'),'cat',cG,COLORS_CAT);document.getElementById('catAchieved').textContent=fmt(tC)+' ('+cP.toFixed(1)+'%)';document.getElementById('catRemaining').textContent=tC>=cG?'Goal reached!':fmt(cG-tC)+' remaining';document.getElementById('catPct').textContent=cP.toFixed(1)+'%';document.getElementById('catPct').style.color=cP>=95?'var(--green)':cP>=75?'var(--amber)':'var(--muted)';renderTable(filtered)}function buildMeter(id,items,type,goal,colors){const c=document.getElementById(id);c.innerHTML='';if(!items.length)return;items.forEach((b,i)=>{let amt,tip='';if(type==='room'){const g=(b.adr||0)*(b.roomNights||0);amt=g*0.8;tip='<div>ADR: '+fmt(b.adr)+' × '+b.roomNights+' nights</div><div>Gross: '+fmt(g)+'</div><div>Net: '+fmt(amt)+'</div>'}else{amt=(b.roomRental||0)+(b.fnb||0)+(b.av||0);if(b.roomRental)tip+='<div>Room Rental: '+fmt(b.roomRental)+'</div>';if(b.fnb)tip+='<div>F&B: '+fmt(b.fnb)+'</div>';if(b.av)tip+='<div>AV: '+fmt(b.av)+'</div>'}const seg=document.createElement('div');seg.className='meter-segment';seg.style.width=Math.min(amt/goal*100,100)+'%';seg.style.background=colors[i%colors.length];seg.innerHTML='<div class="meter-tooltip"><div style="font-weight:700">'+b.groupName+'</div><div style="color:var(--green)">'+fmt(amt)+'</div>'+tip+'</div>';c.appendChild(seg)})}function renderTable(items){const body=document.getElementById('bookingsBody');if(!items.length){body.innerHTML='<div class="empty-state">No bookings yet. Click "+ New Booking" to get started.</div>';return}let h='<table class="bookings-table"><thead><tr><th>Group</th><th>Type</th><th>Segment</th><th>Room Rev (Net)</th><th>CateringRev</th><th>Month</th><th></th></tr></thead><tbody>';items.forEach(b=>{const rN=(b.adr||0)*(b.roomNights||0)*0.8,cR=(b.roomRental||0)+(b.fnb||0)+(b.av||0);h+='<tr><td><strong>'+b.groupName+'</strong></td><td><span class="type-badge '+b.type+'">'+(b.type==='rooms'?'Rooms':b.type==='events'?'Event':'Both')+'</span></td><td><span class="segment-badge '+b.segment+'">'+b.segment+'</span></td><td>'+(b.type!=='events'?fmt(rN):'—')+'</td><td>'+(cR>0?fmt(cR):'—')+'</td><td style="color:var(--muted)">'+MONTH_NAMES[b.month]+'</td><td><button class="action-btn" onclick="editBooking(\''+b.id+'\')">✏️</button><button class="action-btn delete" onclick="deleteBooking(\''+b.id+'\')">✕</button></td></tr>'});body.innerHTML=h+'</tbody></table>'}function getCurrentMonth(){return MONTHS[new Date().getMonth()]}function openModal(){editingId=null;document.getElementById('modalTitle').textContent='Add New Booking';document.getElementById('modal').classList.add('open');document.getElementById('fMonth').value=getCurrentMonth();updateFieldVisibility();updateCalcPreview()}function closeModal(){document.getElementById('modal').classList.remove('open');resetForm()}function editBooking(id){const b=bookings.find(x=>x.id===id);if(!b)return;editingId=id;document.getElementById('modalTitle').textContent='Edit Booking';document.getElementById('fGroupName').value=b.groupName;document.getElementById('fSegment').value=b.segment;document.getElementById('fInquiryDate').value=b.inquiryDate||'';document.getElementById('fCloseDate').value=b.closeDate||'';document.getElementById('fMonth').value=b.month;document.querySelector('input[name="bookingType"][value="'+b.type+'"]').checked=true;updateFieldVisibility();document.getElementById('fADR').value=b.adr||'';document.getElementById('fRoomNights').value=b.roomNights||'';document.getElementById('fRoomRental').value=b.roomRental||'';document.getElementById('fFnB').value=b.fnb||'';document.getElementById('fAV').value=b.av||'';updateCalcPreview();document.getElementById('modal').classList.add('open')}document.querySelectorAll('input[name="bookingType"]').forEach(r=>r.addEventListener('change',()=>{updateFieldVisibility();updateCalcPreview()}));function updateFieldVisibility(){const t=document.querySelector('input[name="bookingType"]:checked').value;document.getElementById('roomFields').classList.toggle('visible',t==='rooms'||t==='both');document.getElementById('eventFields').classList.toggle('visible',t==='events'||t==='both')}function updateCalcPreview(){const g=(parseFloat(document.getElementById('fADR').value)||0)*(parseInt(document.getElementById('fRoomNights').value)||0);document.getElementById('calcGross').textContent=fmt(g);document.getElementById('calcNet').textContent=fmt(g*0.8)}function saveBooking(){const name=document.getElementById('fGroupName').value.trim();if(!name){alert('Please enter a group name.');return}const type=document.querySelector('input[name="bookingType"]:checked').value;const b={id:editingId||Date.now().toString(36)+Math.random().toString(36).slice(2,6),groupName:name,segment:document.getElementById('fSegment').value,inquiryDate:document.getElementById('fInquiryDate').value,closeDate:document.getElementById('fCloseDate').value,type:type,month:document.getElementById('fMonth').value,adr:0,roomNights:0,roomRental:0,fnb:0,av:0};if(type==='rooms'||type==='both'){b.adr=parseFloat(document.getElementById('fADR').value)||0;b.roomNights=parseInt(document.getElementById('fRoomNights').value)||0}if(type==='events'||type==='both'){b.roomRental=parseFloat(document.getElementById('fRoomRental').value)||0;b.fnb=parseFloat(document.getElementById('fFnB').value)||0;b.av=parseFloat(document.getElementById('fAV').value)||0}if(editingId){const i=bookings.findIndex(x=>x.id===editingId);if(i!==-1)bookings[i]=b}else bookings.push(b);saveData();closeModal();render()}function deleteBooking(id){if(!confirm('Delete this booking?'))return;bookings=bookings.filter(b=>b.id!==id);saveData();render()}functionresetForm(){editingId=null;['fGroupName','fInquiryDate','fCloseDate','fADR','fRoomNights','fRoomRental','fFnB','fAV'].forEach(id=>document.getElementById(id).value='');document.getElementById('typeRooms').checked=true;updateFieldVisibility();updateCalcPreview()}function clearAll(){if(!confirm('Clear ALL bookings?'))return;bookings=[];saveData();render()}function exportCSV(){if(!bookings.length){alert('No bookings to export.');return}const h=['Group Name','Segment','Type','Month','Inquiry Date','Close Date','ADR','Room Nights','Gross Room Rev','Net Room Rev','Room Rental','F&B','AV','Total Catering'];const r=bookings.map(b=>{const g=(b.adr||0)*(b.roomNights||0);return[b.groupName,b.segment,b.type,b.month,b.inquiryDate,b.closeDate,b.adr,b.roomNights,g,g*0.8,b.roomRental,b.fnb,b.av,(b.roomRental||0)+(b.fnb||0)+(b.av||0)]});const csv=h.join(',')+'\n'+r.map(x=>x.map(c=>'"'+c+'"').join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='2026_bookings.csv';a.click()}function openGoalsModal(){const c=document.getElementById('goalsGrid');let h='';[{l:'Q1',m:['jan','feb','mar']},{l:'Q2',m:['apr','may','jun']},{l:'Q3',m:['jul','aug','sep']},{l:'Q4',m:['oct','nov','dec']}].forEach(q=>{h+='<div class="goals-section-title">'+q.l+'</div><div class="goal-row"><div></div><div style="font-size:.7rem;color:var(--muted);text-align:center">Room Goal</div><div style="font-size:.7rem;color:var(--muted);text-align:center">Catering Goal</div></div>';q.m.forEach(m=>h+='<div class="goal-row"><div class="month-label">'+MONTH_NAMES[m]+'</div><input type="number" id="goal_rooms_'+m+'" value="'+(goals.rooms[m]||0)+'"><input type="number" id="goal_cat_'+m+'" value="'+(goals.catering[m]||0)+'"></div>')});c.innerHTML=h;document.getElementById('goalsModal').classList.add('open')}function closeGoalsModal(){document.getElementById('goalsModal').classList.remove('open')}function saveGoals(){MONTHS.forEach(m=>{goals.rooms[m]=parseInt(document.getElementById('goal_rooms_'+m).value)||0;goals.catering[m]=parseInt(document.getElementById('goal_cat_'+m).value)||0});saveData();closeGoalsModal();render()}buildTabs();</script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Sales Goal Tracker</title>
+    <style>
+        :root {
+            --bg: #0f1117;
+            --card: #1a1d27;
+            --border: #2a2d3a;
+            --text: #e4e4e7;
+            --muted: #71717a;
+            --accent: #3b82f6;
+            --green: #22c55e;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --purple: #a855f7;
+            --pink: #ec4899;
+            --cyan: #06b6d4;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+        
+        /* Lock Screen */
+        #lockScreen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        #lockScreen.hidden { display: none; }
+        .lock-icon { width: 64px; height: 64px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--purple)); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 24px; }
+        .lock-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 6px; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .lock-subtitle { color: var(--muted); font-size: 0.85rem; margin-bottom: 28px; }
+        .pin-display { display: flex; gap: 12px; margin-bottom: 24px; }
+        .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); transition: all 0.2s; }
+        .pin-dot.filled { background: var(--accent); border-color: var(--accent); }
+        .pin-dot.error { background: var(--red); border-color: var(--red); animation: pinShake 0.4s; }
+        @keyframes pinShake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-6px)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 80%{transform:translateX(4px)} }
+        .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 260px; }
+        .pin-btn { width: 76px; height: 76px; border-radius: 50%; border: 1px solid var(--border); background: var(--card); color: var(--text); font-size: 1.5rem; font-weight: 600; cursor: pointer; }
+        .pin-btn:hover { background: rgba(59,130,246,0.15); border-color: var(--accent); }
+        .pin-btn.backspace { font-size: 1.2rem; color: var(--muted); }
+        .pin-btn.empty { visibility: hidden; }
+        .lock-error { color: var(--red); font-size: 0.8rem; margin-top: 16px; }
+        
+        /* Main App */
+        #appMain { display: none; padding: 20px; }
+        #appMain.visible { display: block; }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { font-size: 1.8rem; font-weight: 700; background: linear-gradient(135deg, var(--accent), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .header p { color: var(--muted); margin-top: 4px; font-size: 0.9rem; }
+        .top-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; }
+        .btn-goals { background: var(--card); border: 1px solid var(--border); color: var(--text); padding: 8px 16px; border-radius: 8px; cursor: pointer; }
+        .btn-goals:hover { border-color: var(--accent); }
+        
+        /* Bonus Bar */
+        .bonus-bar { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .bonus-bar .label { font-size: 0.85rem; color: var(--muted); }.bonus-bar .value { font-size: 1.4rem; font-weight: 700; }
+        .threshold { font-size: 0.8rem; padding: 4px 10px; border-radius: 20px; font-weight: 600; }
+        .threshold.on-track { background: rgba(34,197,94,0.15); color: var(--green); }
+        .threshold.at-risk { background: rgba(245,158,11,0.15); color: var(--amber); }
+        .threshold.behind { background: rgba(239,68,68,0.15); color: var(--red); }
+        
+        /* Tabs */
+        .controls { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        .month-tabs { display: flex; gap: 4px; flex-wrap: wrap; }
+        .month-tabs button { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; }
+        .month-tabs button.active, .month-tabs button:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .month-tabs button.quarter { background: rgba(168,85,247,0.15); border-color: rgba(168,85,247,0.3); color: var(--purple); }
+        .month-tabs button.quarter.active { background: var(--purple); color: #fff; }
+        .month-tabs button.year { background: rgba(34,197,94,0.15); color: var(--green); }
+        .month-tabs button.year.active { background: var(--green); color: #fff; }
+        .btn-add { background: linear-gradient(135deg, var(--accent), var(--purple)); color: #fff; border: none; padding: 10px 22px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+        
+        /* Meters */
+        .meters-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+        @media (max-width: 700px) { .meters-grid { grid-template-columns: 1fr; } }
+        .meter-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+        .meter-card h3 { font-size: 0.95rem; margin-bottom: 4px; }
+        .meter-card .goal-line { font-size: 0.8rem; color: var(--muted); margin-bottom: 14px; }
+        .meter-container { position: relative; width: 100%; height: 42px; background: #22252f; border-radius: 10px; margin-bottom: 8px; }
+        .meter-fill { display: flex; height: 100%; border-radius: 10px; overflow: hidden; }
+        .meter-segment { height: 100%; cursor: pointer; min-width: 3px; position: relative; }
+        .meter-segment:hover { filter: brightness(1.3); }
+        .meter-tooltip { display: none; position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%); background: #2a2d3a; border: 1px solid #3a3d4a; border-radius: 8px; padding: 10px; font-size: 0.78rem; white-space: nowrap; z-index: 100; }
+        .meter-segment:hover .meter-tooltip { display: block; }
+        .goal-marker { position: absolute; top: -4px; bottom: -4px; width: 2px; background: var(--amber); z-index: 5; }
+        .goal-marker::after { content: '95%'; position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 0.65rem; color: var(--amber); }
+        .meter-stats { display: flex; justify-content: space-between; font-size: 0.8rem; }
+        .meter-stats .achieved { color: var(--green); font-weight: 600; }
+        .meter-stats .remaining { color: var(--muted); }
+        .revenue-breakdown { font-size: 0.75rem; color: var(--muted); margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); }
+        .revenue-breakdown span { margin-right: 12px; }
+        .pct-label { font-size: 1.1rem; font-weight: 700; text-align: right; margin-top: 2px; }
+        
+        /* Table */
+        .bookings-section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
+        .bookings-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        .bookings-table th { text-align: left; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; }.bookings-table td { padding: 10px; border-bottom: 1px solid #1f2230; }
+        .segment-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
+        .segment-badge.smerf { background: rgba(168,85,247,0.15); color: var(--purple); }
+        .segment-badge.corporate { background: rgba(59,130,246,0.15); color: var(--accent); }
+        .segment-badge.government { background: rgba(6,182,212,0.15); color: var(--cyan); }
+        .type-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; }
+        .type-badge.rooms { background: rgba(34,197,94,0.15); color: var(--green); }
+        .type-badge.events { background: rgba(236,72,153,0.15); color: var(--pink); }
+        .type-badge.both { background: rgba(245,158,11,0.15); color: var(--amber); }
+        .action-btn { background: none; border: none; color: var(--muted); cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+        .action-btn:hover { background: rgba(59,130,246,0.1); color: var(--accent); }
+        .action-btn.delete:hover { color: var(--red); }
+        .empty-state { text-align: center; padding: 40px; color: var(--muted); }
+        .export-row { display: flex; gap: 8px; margin-top: 12px; justify-content: flex-end; }
+        .btn-sm { background: var(--card); border: 1px solid var(--border); color: var(--muted); padding: 6px 14px; border-radius: 6px; font-size: 0.75rem; cursor: pointer; }
+        .btn-sm:hover { border-color: var(--accent); }
+        
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .modal h2 { font-size: 1.2rem; margin-bottom: 20px; }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: none; border: none; color: var(--muted); font-size: 1.4rem; cursor: pointer; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px 12px; background: #22252f; border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-size: 0.9rem; }
+        .form-group input:focus { border-color: var(--accent); outline: none; }
+        .radio-group { display: flex; gap: 8px; margin-bottom: 16px; }
+        .radio-option { flex: 1; position: relative; }
+        .radio-option input { position: absolute; opacity: 0; }
+        .radio-option label { display: block; text-align: center; padding: 10px 8px; background: #22252f; border: 2px solid var(--border); border-radius: 10px; cursor: pointer; font-size: 0.82rem; color: var(--muted); }
+        .radio-option input:checked + label { border-color: var(--accent); background: rgba(59,130,246,0.1); color: var(--text); }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .btn-save { width: 100%; padding: 12px; background: linear-gradient(135deg, var(--accent), var(--purple)); color: #fff; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+        .conditional-fields { display: none; }
+        .conditional-fields.visible { display: block; }
+        .calc-preview { background: #22252f; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin: 12px 0; font-size: 0.8rem; }
+        .calc-preview .calc-line { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        .calc-preview .calc-line.total { border-top: 1px solid var(--border); padding-top: 8px; margin-top: 8px; font-weight: 700; color: var(--green); }.goals-grid { display: grid; gap: 12px; }
+        .goal-row { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 10px; align-items: center; }
+        .goal-row .month-label { font-weight: 600; font-size: 0.85rem; }
+        .goals-section-title { font-size: 0.9rem; font-weight: 600; margin: 16px 0 10px; color: var(--accent); }
+    </style>
+</head>
+<body>
+
+<!-- Lock Screen -->
+<div id="lockScreen">
+    <div class="lock-icon">🔒</div>
+    <div class="lock-title">2026 Sales Tracker</div>
+    <div class="lock-subtitle">Enter PIN to continue</div>
+    <div class="pin-display">
+        <div class="pin-dot" id="dot0"></div>
+        <div class="pin-dot" id="dot1"></div>
+        <div class="pin-dot" id="dot2"></div>
+        <div class="pin-dot" id="dot3"></div>
+    </div>
+    <div class="pin-pad">
+        <button class="pin-btn" onclick="pinPress('1')">1</button>
+        <button class="pin-btn" onclick="pinPress('2')">2</button>
+        <button class="pin-btn" onclick="pinPress('3')">3</button>
+        <button class="pin-btn" onclick="pinPress('4')">4</button>
+        <button class="pin-btn" onclick="pinPress('5')">5</button>
+        <button class="pin-btn" onclick="pinPress('6')">6</button>
+        <button class="pin-btn" onclick="pinPress('7')">7</button>
+        <button class="pin-btn" onclick="pinPress('8')">8</button>
+        <button class="pin-btn" onclick="pinPress('9')">9</button>
+        <button class="pin-btn empty"></button>
+        <button class="pin-btn" onclick="pinPress('0')">0</button>
+        <button class="pin-btn backspace" onclick="pinBackspace()">⌫</button>
+    </div>
+    <div class="lock-error" id="lockError"></div>
+</div>
+
+<!-- Main App -->
+<div id="appMain">
+    <div class="header">
+        <h1>2026 Sales Goal Tracker</h1>
+        <p>Individual Group Rooms & Catering Revenue — The Compton</p>
+    </div>
+    
+    <div class="top-buttons">
+        <button class="btn-goals" onclick="openGoalsModal()">⚙️ Edit Goals</button>
+    </div>
+    
+    <div class="bonus-bar">
+        <div>
+            <div class="label">Weighted Achievement</div>
+            <div class="value" id="weightedPct">0.0%</div>
+        </div>
+        <div>
+            <div class="label">Room Revenue (Net)</div>
+            <div class="value" id="totalRoomRev">$0</div>
+        </div>
+        <div>
+            <div class="label">Catering Revenue</div>
+            <div class="value" id="totalCatRev">$0</div>
+        </div>
+        <div>
+            <span class="threshold behind" id="bonusStatus">Below 95% Threshold</span>
+        </div>
+    </div>
+    
+    <div class="controls">
+        <div class="month-tabs" id="monthTabs"></div>
+        <button class="btn-add" onclick="openModal()">+ New Booking</button>
+    </div>
+    
+    <div class="meters-grid">
+        <div class="meter-card">
+            <h3>🏨 Individual Group Room Revenue</h3>
+            <div class="goal-line" id="roomGoalLabel">Goal: $0 — Weight: 35%</div>
+            <div class="meter-container">
+                <div class="meter-fill" id="roomMeter"></div>
+                <div class="goal-marker" style="left:95%"></div>
+            </div>
+            <div class="meter-stats">
+                <span class="achieved" id="roomAchieved">$0 (0%)</span>
+                <span class="remaining" id="roomRemaining">$0 remaining</span>
+            </div>
+            <div class="revenue-breakdown" id="roomBreakdown">
+                <span>Gross: $0</span>
+                <span>Net (80%): $0</span>
+            </div>
+            <div class="pct-label" id="roomPct">0%</div>
+        </div>
+        
+        <div class="meter-card">
+            <h3>🍽️ Individual Catering Revenue</h3>
+            <div class="goal-line" id="catGoalLabel">Goal: $0 — Weight: 25%</div>
+            <div class="meter-container">
+                <div class="meter-fill" id="catMeter"></div>
+                <div class="goal-marker" style="left:95%"></div>
+            </div>
+            <div class="meter-stats">
+                <span class="achieved" id="catAchieved">$0 (0%)</span>
+                <span class="remaining" id="catRemaining">$0 remaining</span>
+            </div>
+            <div class="pct-label" id="catPct">0%</div>
+        </div>
+    </div>
+    
+    <div class="bookings-section">
+        <h3>Bookings Log</h3><div id="bookingsBody"></div>
+        <div class="export-row">
+            <button class="btn-sm" onclick="exportCSV()">📤 Export CSV</button>
+            <button class="btn-sm" onclick="clearAll()">🗑️ Clear All</button>
+        </div>
+    </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <button class="modal-close" onclick="closeModal()">✕</button>
+        <h2 id="modalTitle">Add New Booking</h2>
+        
+        <div class="form-group">
+            <label>Group Name</label>
+            <input type="text" id="fGroupName" placeholder="e.g. Walmart Regional Team">
+        </div>
+        
+        <div class="form-group">
+            <label>Segment</label>
+            <select id="fSegment">
+                <option value="corporate">Corporate</option>
+                <option value="smerf">SMERF</option>
+                <option value="government">Government</option>
+            </select>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label>Date of Inquiry</label>
+                <input type="date" id="fInquiryDate">
+            </div>
+            <div class="form-group">
+                <label>Date Closed</label>
+                <input type="date" id="fCloseDate">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Booking Type</label>
+            <div class="radio-group">
+                <div class="radio-option">
+                    <input type="radio" name="bookingType" id="typeRooms" value="rooms" checked>
+                    <label for="typeRooms">Rooms Only</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="bookingType" id="typeEvents" value="events">
+                    <label for="typeEvents">Event Only</label>
+                </div>
+                <div class="radio-option">
+                    <input type="radio" name="bookingType" id="typeBoth" value="both">
+                    <label for="typeBoth">Rooms + Event</label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conditional-fields visible" id="roomFields">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ADR ($)</label>
+                    <input type="number" id="fADR" placeholder="0.00" oninput="updateCalcPreview()">
+                </div>
+                <div class="form-group">
+                    <label>Room Nights</label>
+                    <input type="number" id="fRoomNights" placeholder="0" oninput="updateCalcPreview()">
+                </div>
+            </div>
+            <div class="calc-preview">
+                <div class="calc-line">
+                    <span>Gross Revenue (ADR × Nights)</span>
+                    <span id="calcGross">$0</span>
+                </div>
+                <div class="calc-line total">
+                    <span>Net Revenue (80% attrition)</span>
+                    <span id="calcNet">$0</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="conditional-fields" id="eventFields">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Room Rental ($)</label>
+                    <input type="number" id="fRoomRental" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>F&B Minimum ($)</label>
+                    <input type="number" id="fFnB" placeholder="0.00">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>AV Add-Ons ($)</label>
+                <input type="number" id="fAV" placeholder="0.00">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label>Booking Month</label>
+            <select id="fMonth">
+                <option value="jan">January</option><option value="feb">February</option>
+                <option value="mar">March</option>
+                <option value="apr">April</option>
+                <option value="may">May</option>
+                <option value="jun">June</option>
+                <option value="jul">July</option>
+                <option value="aug">August</option>
+                <option value="sep">September</option>
+                <option value="oct">October</option>
+                <option value="nov">November</option>
+                <option value="dec">December</option>
+            </select>
+        </div>
+        
+        <button class="btn-save" onclick="saveBooking()">Save Booking</button>
+    </div>
+</div>
+
+<!-- Goals Modal -->
+<div class="modal-overlay" id="goalsModal">
+    <div class="modal" style="max-width: 600px;">
+        <button class="modal-close" onclick="closeGoalsModal()">✕</button>
+        <h2>Edit Monthly Goals</h2>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 16px;">
+            Set your monthly goals. Quarterly and yearly totals auto-calculate.
+        </p>
+        <div class="goals-grid" id="goalsGrid"></div>
+        <button class="btn-save" onclick="saveGoals()" style="margin-top: 20px;">Save Goals</button>
+    </div>
+</div>
+
+<script>
+// PIN Lock
+const CORRECT_PIN = '4273';
+let pinEntry = '';
+
+function pinPress(d) {
+    if (pinEntry.length >= 4) return;
+    pinEntry += d;
+    updateDots();
+    if (pinEntry.length === 4) {
+        setTimeout(() => pinEntry === CORRECT_PIN ? unlock() : showPinError(), 200);
+    }
+}
+
+function pinBackspace() {
+    if (!pinEntry.length) return;
+    pinEntry = pinEntry.slice(0, -1);
+    updateDots();
+    document.getElementById('lockError').textContent = '';
+}
+
+function updateDots() {
+    for (let i = 0; i < 4; i++) {
+        document.getElementById('dot' + i).className = 'pin-dot' + (i < pinEntry.length ? ' filled' : '');
+    }
+}
+
+function showPinError() {
+    for (let i = 0; i < 4; i++) {
+        document.getElementById('dot' + i).className = 'pin-dot error';
+    }
+    document.getElementById('lockError').textContent = 'Incorrect PIN';
+    setTimeout(() => { pinEntry = ''; updateDots(); }, 600);
+}
+
+function unlock() {
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('appMain').classList.add('visible');
+    render();
+}
+
+document.addEventListener('keydown', e => {
+    if (!document.getElementById('lockScreen').classList.contains('hidden')) return;
+    if (e.key >= '0' && e.key <= '9') pinPress(e.key);
+    else if (e.key === 'Backspace') pinBackspace();
+});
+
+// Data
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+const MONTH_NAMES = {
+    jan: 'January', feb: 'February', mar: 'March', apr: 'April',
+    may: 'May', jun: 'June', jul: 'July', aug: 'August',
+    sep: 'September', oct: 'October', nov: 'November', dec: 'December'
+};
+const QUARTERS = {
+    q1: ['jan', 'feb', 'mar'],
+    q2: ['apr', 'may', 'jun'],
+    q3: ['jul', 'aug', 'sep'],
+    q4: ['oct', 'nov', 'dec']
+};
+
+const DEFAULT_GOALS = {
+    rooms: { jan: 22308, feb: 26154, mar: 28462, apr: 1, may: 1, jun: 1, jul: 1, aug: 1, sep: 1, oct: 1, nov: 1, dec: 1 },
+    catering: { jan: 20831, feb: 21503, mar: 24863, apr: 1, may: 1, jun: 1, jul: 1, aug: 1, sep: 1, oct: 1, nov: 1, dec: 1 },
+    weight: { rooms: 0.35, catering: 0.25 }
+};
+
+let goals = JSON.parse(localStorage.getItem('htl_goals')) || JSON.parse(JSON.stringify(DEFAULT_GOALS));
+let bookings = JSON.parse(localStorage.getItem('htl_bookings') || '[]');
+let currentView = 'q1';
+let editingId = null;
+
+const COLORS_ROOMS = ['#22c55e','#16a34a','#15803d','#166534','#4ade80','#34d399','#2dd4bf','#06b6d4','#0ea5e9','#3b82f6','#6366f1','#8b5cf6','#a855f7','#c084fc','#d946ef'];
+const COLORS_CAT = ['#ec4899','#f43f5e','#f97316','#f59e0b','#eab308','#fb923c','#fbbf24','#facc15','#a3e635','#84cc16','#22d3ee','#67e8f9','#e879f9','#c084fc','#fb7185'];
+
+function saveData() {
+    localStorage.setItem('htl_bookings', JSON.stringify(bookings));
+    localStorage.setItem('htl_goals', JSON.stringify(goals));
+}
+
+function fmt(n) {
+    return '$' + Number(n).toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+}
+
+// Tabs
+function buildTabs() {
+    const c = document.getElementById('monthTabs');
+    let h = '';
+    h += '<button onclick="setView(\'jan\')">Jan</button>';
+    h += '<button onclick="setView(\'feb\')">Feb</button>';
+    h += '<button onclick="setView(\'mar\')">Mar</button>';
+    h += '<button class="quarter" onclick="setView(\'q1\')">Q1</button>';
+    h += '<button onclick="setView(\'apr\')">Apr</button>';
+    h += '<button onclick="setView(\'may\')">May</button>';
+    h += '<button onclick="setView(\'jun\')">Jun</button>';
+    h += '<button class="quarter" onclick="setView(\'q2\')">Q2</button>';
+    h += '<button onclick="setView(\'jul\')">Jul</button>';
+    h += '<button onclick="setView(\'aug\')">Aug</button>';
+    h += '<button onclick="setView(\'sep\')">Sep</button>';
+    h += '<button class="quarter" onclick="setView(\'q3\')">Q3</button>';
+    h += '<button onclick="setView(\'oct\')">Oct</button>';h += '<button onclick="setView(\'nov\')">Nov</button>';
+    h += '<button onclick="setView(\'dec\')">Dec</button>';
+    h += '<button class="quarter" onclick="setView(\'q4\')">Q4</button>';
+    h += '<button class="year" onclick="setView(\'year\')">2026</button>';
+    c.innerHTML = h;
+    updateActiveTab();
+}
+
+function updateActiveTab() {
+    document.querySelectorAll('.month-tabs button').forEach(b => {
+        b.classList.remove('active');
+        if (b.textContent.toLowerCase() === currentView || (currentView === 'year' && b.textContent === '2026')) {
+            b.classList.add('active');
+        }
+    });
+}
+
+function setView(v) {
+    currentView = v;
+    updateActiveTab();
+    render();
+}
+
+function getGoalForView(type, view) {
+    if (MONTHS.includes(view)) return goals[type][view] || 0;
+    if (view.startsWith('q')) return QUARTERS[view].reduce((s, m) => s + (goals[type][m] || 0), 0);
+    if (view === 'year') return MONTHS.reduce((s, m) => s + (goals[type][m] || 0), 0);
+    return 0;
+}
+
+function getMonthsForView(view) {
+    if (MONTHS.includes(view)) return [view];
+    if (view.startsWith('q')) return QUARTERS[view];
+    if (view === 'year') return MONTHS;
+    return [];
+}
+
+function getFiltered() {
+    return bookings.filter(b => getMonthsForView(currentView).includes(b.month));
+}
+
+// Render
+function render() {
+    const filtered = getFiltered();
+    let tRG = 0, tRN = 0, tC = 0;
+    
+    filtered.forEach(b => {
+        if (b.type === 'rooms' || b.type === 'both') {
+            const g = (b.adr || 0) * (b.roomNights || 0);
+            tRG += g;
+            tRN += g * 0.8;
+        }
+        if (b.type === 'events' || b.type === 'both') {
+            tC += (b.roomRental || 0) + (b.fnb || 0) + (b.av || 0);
+        }
+    });
+    
+    const rG = getGoalForView('rooms', currentView);
+    const cG = getGoalForView('catering', currentView);
+    
+    document.getElementById('totalRoomRev').textContent = fmt(tRN);
+    document.getElementById('totalCatRev').textContent = fmt(tC);
+    
+    const rP = rG > 0 ? (tRN / rG) * 100 : 0;
+    const cP = cG > 0 ? (tC / cG) * 100 : 0;
+    const wP = (rP * goals.weight.rooms + cP * goals.weight.catering) / (goals.weight.rooms + goals.weight.catering);
+    
+    document.getElementById('weightedPct').textContent = wP.toFixed(1) + '%';
+    
+    const s = document.getElementById('bonusStatus');
+    if (wP >= 95) {
+        s.className = 'threshold on-track';
+        s.textContent = '✓ Bonus Threshold Met!';
+    } else if (wP >= 75) {
+        s.className = 'threshold at-risk';
+        s.textContent = 'Approaching 95% Threshold';
+    } else {
+        s.className = 'threshold behind';
+        s.textContent = 'Below 95% Threshold';
+    }
+    
+    const vL = currentView === 'year' ? '2026' : currentView.toUpperCase();
+    document.getElementById('roomGoalLabel').textContent = 'Goal: ' + fmt(rG) + ' (' + vL + ') — Weight: 35%';
+    document.getElementById('catGoalLabel').textContent = 'Goal: ' + fmt(cG) + ' (' + vL + ') — Weight: 25%';
+    
+    buildMeter('roomMeter', filtered.filter(b => b.type === 'rooms' || b.type === 'both'), 'room', rG, COLORS_ROOMS);
+    document.getElementById('roomAchieved').textContent = fmt(tRN) + ' (' + rP.toFixed(1) + '%)';
+    document.getElementById('roomRemaining').textContent = tRN >= rG ? 'Goal reached!' : fmt(rG - tRN) + ' remaining';
+    document.getElementById('roomBreakdown').innerHTML = '<span>Gross: ' + fmt(tRG) + '</span><span>Net (80%): ' + fmt(tRN) + '</span>';
+    document.getElementById('roomPct').textContent = rP.toFixed(1) + '%';
+    document.getElementById('roomPct').style.color = rP >= 95 ? 'var(--green)' : rP >= 75 ? 'var(--amber)' : 'var(--muted)';
+    
+    buildMeter('catMeter', filtered.filter(b => b.type === 'events' || b.type === 'both'), 'cat', cG, COLORS_CAT);
+    document.getElementById('catAchieved').textContent = fmt(tC) + ' (' + cP.toFixed(1) + '%)';document.getElementById('catRemaining').textContent = tC >= cG ? 'Goal reached!' : fmt(cG - tC) + ' remaining';
+    document.getElementById('catPct').textContent = cP.toFixed(1) + '%';
+    document.getElementById('catPct').style.color = cP >= 95 ? 'var(--green)' : cP >= 75 ? 'var(--amber)' : 'var(--muted)';
+    
+    renderTable(filtered);
+}
+
+function buildMeter(id, items, type, goal, colors) {
+    const c = document.getElementById(id);
+    c.innerHTML = '';
+    if (!items.length) return;
+    
+    items.forEach((b, i) => {
+        let amt, tip = '';
+        if (type === 'room') {
+            const g = (b.adr || 0) * (b.roomNights || 0);
+            amt = g * 0.8;
+            tip = '<div>ADR: ' + fmt(b.adr) + ' × ' + b.roomNights + ' nights</div><div>Gross: ' + fmt(g) + '</div><div>Net: ' + fmt(amt) + '</div>';
+        } else {
+            amt = (b.roomRental || 0) + (b.fnb || 0) + (b.av || 0);
+            if (b.roomRental) tip += '<div>Room Rental: ' + fmt(b.roomRental) + '</div>';
+            if (b.fnb) tip += '<div>F&B: ' + fmt(b.fnb) + '</div>';
+            if (b.av) tip += '<div>AV: ' + fmt(b.av) + '</div>';
+        }
+        const seg = document.createElement('div');
+        seg.className = 'meter-segment';
+        seg.style.width = Math.min(amt / goal * 100, 100) + '%';
+        seg.style.background = colors[i % colors.length];
+        seg.innerHTML = '<div class="meter-tooltip"><div style="font-weight:700">' + b.groupName + '</div><div style="color:var(--green)">' + fmt(amt) + '</div>' + tip + '</div>';
+        c.appendChild(seg);
+    });
+}
+
+function renderTable(items) {
+    const body = document.getElementById('bookingsBody');
+    if (!items.length) {
+        body.innerHTML = '<div class="empty-state">No bookings yet. Click "+ New Booking" to get started.</div>';
+        return;
+    }
+    
+    let h = '<table class="bookings-table"><thead><tr><th>Group</th><th>Type</th><th>Segment</th><th>Room Rev (Net)</th><th>Catering Rev</th><th>Month</th><th></th></tr></thead><tbody>';
+    
+    items.forEach(b => {
+        const rN = (b.adr || 0) * (b.roomNights || 0) * 0.8;
+        const cR = (b.roomRental || 0) + (b.fnb || 0) + (b.av || 0);
+        const typeLabel = b.type === 'rooms' ? 'Rooms' : b.type === 'events' ? 'Event' : 'Both';
+        
+        h += '<tr>';
+        h += '<td><strong>' + b.groupName + '</strong></td>';
+        h += '<td><span class="type-badge ' + b.type + '">' + typeLabel + '</span></td>';
+        h += '<td><span class="segment-badge ' + b.segment + '">' + b.segment + '</span></td>';
+        h += '<td>' + (b.type !== 'events' ? fmt(rN) : '—') + '</td>';
+        h += '<td>' + (cR > 0 ? fmt(cR) : '—') + '</td>';
+        h += '<td style="color:var(--muted)">' + MONTH_NAMES[b.month] + '</td>';
+        h += '<td><button class="action-btn" onclick="editBooking(\'' + b.id + '\')">✏️</button>';
+        h += '<button class="action-btn delete" onclick="deleteBooking(\'' + b.id + '\')">✕</button></td>';
+        h += '</tr>';
+    });
+    
+    body.innerHTML = h + '</tbody></table>';
+}
+
+// Modal Functions
+function getCurrentMonth() {
+    return MONTHS[new Date().getMonth()];
+}
+
+function openModal() {
+    editingId = null;
+    document.getElementById('modalTitle').textContent = 'Add New Booking';
+    document.getElementById('modal').classList.add('open');
+    document.getElementById('fMonth').value = getCurrentMonth();
+    updateFieldVisibility();
+    updateCalcPreview();
+}
+
+function closeModal() {
+    document.getElementById('modal').classList.remove('open');
+    resetForm();
+}
+
+function editBooking(id) {
+    const b = bookings.find(x => x.id === id);
+    if (!b) return;
+    
+    editingId = id;
+    document.getElementById('modalTitle').textContent = 'Edit Booking';
+    document.getElementById('fGroupName').value = b.groupName;
+    document.getElementById('fSegment').value = b.segment;
+    document.getElementById('fInquiryDate').value = b.inquiryDate || '';
+    document.getElementById('fCloseDate').value = b.closeDate || '';
+    document.getElementById('fMonth').value = b.month;
+    document.querySelector('input[name="bookingType"][value="' + b.type + '"]').checked = true;
+    updateFieldVisibility();
+    document.getElementById('fADR').value = b.adr || '';
+    document.getElementById('fRoomNights').value = b.roomNights || '';
+    document.getElementById('fRoomRental').value = b.roomRental || '';
+    document.getElementById('fFnB').value = b.fnb || '';
+    document.getElementById('fAV').value = b.av || '';
+    updateCalcPreview();
+    document.getElementById('modal').classList.add('open');
+}
+
+document.querySelectorAll('input[name="bookingType"]').forEach(r => {
+    r.addEventListener('change', () => {
+        updateFieldVisibility();
+        updateCalcPreview();
+    });
+});
+
+function updateFieldVisibility() {
+    const t = document.querySelector('input[name="bookingType"]:checked').value;
+    document.getElementById('roomFields').classList.toggle('visible', t === 'rooms' || t === 'both');
+    document.getElementById('eventFields').classList.toggle('visible', t === 'events' || t === 'both');
+}
+
+function updateCalcPreview() {
+    const g = (parseFloat(document.getElementById('fADR').value) || 0) * (parseInt(document.getElementById('fRoomNights').value) || 0);
+    document.getElementById('calcGross').textContent = fmt(g);
+    document.getElementById('calcNet').textContent = fmt(g * 0.8);
+}
+
+function saveBooking() {
+    const name = document.getElementById('fGroupName').value.trim();
+    if (!name) {
+        alert('Please enter a group name.');
+        return;
+    }
+    
+    const type = document.querySelector('input[name="bookingType"]:checked').value;
+    
+    const b = {
+        id: editingId || Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+        groupName: name,
+        segment: document.getElementById('fSegment').value,
+        inquiryDate: document.getElementById('fInquiryDate').value,
+        closeDate: document.getElementById('fCloseDate').value,
+        type: type,
+        month: document.getElementById('fMonth').value,
+        adr: 0,
+        roomNights: 0,
+        roomRental: 0,
+        fnb: 0,
+        av: 0
+    };
+    
+    if (type === 'rooms' || type === 'both') {
+        b.adr = parseFloat(document.getElementById('fADR').value) || 0;
+        b.roomNights = parseInt(document.getElementById('fRoomNights').value) || 0;
+    }
+    
+    if (type === 'events' || type === 'both') {
+        b.roomRental = parseFloat(document.getElementById('fRoomRental').value) || 0;
+        b.fnb = parseFloat(document.getElementById('fFnB').value) || 0;
+        b.av = parseFloat(document.getElementById('fAV').value) || 0;
+    }
+    
+    if (editingId) {
+        const i = bookings.findIndex(x => x.id === editingId);
+        if (i !== -1) bookings[i] = b;
+    } else {
+        bookings.push(b);
+    }
+    
+    saveData();
+    closeModal();
+    render();
+}
+
+function deleteBooking(id) {
+    if (!confirm('Delete this booking?')) return;bookings = bookings.filter(b => b.id !== id);
+    saveData();
+    render();
+}
+
+function resetForm() {
+    editingId = null;
+    document.getElementById('fGroupName').value = '';
+    document.getElementById('fInquiryDate').value = '';
+    document.getElementById('fCloseDate').value = '';
+    document.getElementById('fADR').value = '';
+    document.getElementById('fRoomNights').value = '';
+    document.getElementById('fRoomRental').value = '';
+    document.getElementById('fFnB').value = '';
+    document.getElementById('fAV').value = '';
+    document.getElementById('typeRooms').checked = true;
+    updateFieldVisibility();
+    updateCalcPreview();
+}
+
+function clearAll() {
+    if (!confirm('Clear ALL bookings?')) return;
+    bookings = [];
+    saveData();
+    render();
+}
+
+function exportCSV() {
+    if (!bookings.length) {
+        alert('No bookings to export.');
+        return;
+    }
+    
+    const headers = ['Group Name','Segment','Type','Month','Inquiry Date','Close Date','ADR','Room Nights','Gross Room Rev','Net Room Rev','Room Rental','F&B','AV','Total Catering'];
+    const rows = bookings.map(b => {
+        const g = (b.adr || 0) * (b.roomNights || 0);
+        return [b.groupName, b.segment, b.type, b.month, b.inquiryDate, b.closeDate, b.adr, b.roomNights, g, g * 0.8, b.roomRental, b.fnb, b.av, (b.roomRental || 0) + (b.fnb || 0) + (b.av || 0)];
+    });
+    
+    const csv = headers.join(',') + '\n' + rows.map(r => r.map(c => '"' + c + '"').join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = '2026_bookings.csv';
+    a.click();
+}
+
+// Goals Modal
+function openGoalsModal() {
+    const c = document.getElementById('goalsGrid');
+    let h = '';
+    
+    [{l:'Q1', m:['jan','feb','mar']}, {l:'Q2', m:['apr','may','jun']}, {l:'Q3', m:['jul','aug','sep']}, {l:'Q4', m:['oct','nov','dec']}].forEach(q => {
+        h += '<div class="goals-section-title">' + q.l + '</div>';
+        h += '<div class="goal-row"><div></div><div style="font-size:0.7rem;color:var(--muted);text-align:center">Room Goal</div><div style="font-size:0.7rem;color:var(--muted);text-align:center">Catering Goal</div></div>';
+        q.m.forEach(m => {
+            h += '<div class="goal-row">';
+            h += '<div class="month-label">' + MONTH_NAMES[m] + '</div>';
+            h += '<input type="number" id="goal_rooms_' + m + '" value="' + (goals.rooms[m] || 0) + '">';
+            h += '<input type="number" id="goal_cat_' + m + '" value="' + (goals.catering[m] || 0) + '">';
+            h += '</div>';
+        });
+    });
+    
+    c.innerHTML = h;
+    document.getElementById('goalsModal').classList.add('open');
+}
+
+function closeGoalsModal() {
+    document.getElementById('goalsModal').classList.remove('open');
+}
+
+function saveGoals() {
+    MONTHS.forEach(m => {
+        goals.rooms[m] = parseInt(document.getElementById('goal_rooms_' + m).value) || 0;
+        goals.catering[m] = parseInt(document.getElementById('goal_cat_' + m).value) || 0;
+    });
+    saveData();
+    closeGoalsModal();
+    render();
+}
+
+// Initialize
+buildTabs();
+</script>
+</body>
+</html>
