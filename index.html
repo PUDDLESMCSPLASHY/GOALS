@@ -369,7 +369,7 @@
 
 <script>
 // PIN Lock
-const CORRECT_PIN = '4273';
+const VALID_PINS = ['4273', '4275', '4272'];
 let pinEntry = '';
 
 function pinPress(d) {
@@ -377,7 +377,7 @@ function pinPress(d) {
     pinEntry += d;
     updateDots();
     if (pinEntry.length === 4) {
-        setTimeout(() => pinEntry === CORRECT_PIN ? unlock() : showPinError(), 200);
+        setTimeout(() => VALID_PINS.includes(pinEntry) ? unlock() : showPinError(), 200);
     }
 }
 
