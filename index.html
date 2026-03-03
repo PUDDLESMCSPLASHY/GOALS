@@ -458,6 +458,30 @@
             </div>
             <div class="threshold-note">95% threshold required to earn bonus</div>
         </div>
+
+        <div class="bonus-section" style="margin-top: 16px; border: 1px dashed var(--accent);">
+            <h3>🔮 What If Simulator</h3>
+            <p style="font-size: 0.75rem; color: var(--muted); margin-bottom: 12px;">See how a potential booking would affect your bonus</p>
+            <div style="display: grid; gap: 10px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="font-size: 0.8rem; width: 140px;">Room Revenue (net)</label>
+                    <input type="number" id="simRoom" placeholder="0" style="flex:1; padding: 8px; background: #22252f; border: 1px solid var(--border); border-radius: 6px; color: var(--text);" oninput="calculateBonus()">
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="font-size: 0.8rem; width: 140px;">Event Space Rental</label>
+                    <input type="number" id="simRental" placeholder="0" style="flex:1; padding: 8px; background: #22252f; border: 1px solid var(--border); border-radius: 6px; color: var(--text);" oninput="calculateBonus()">
+                </div>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <label style="font-size: 0.8rem; width: 140px;">F&B Minimum</label>
+                    <input type="number" id="simFnB" placeholder="0" style="flex:1; padding: 8px; background: #22252f; border: 1px solid var(--border); border-radius: 6px; color: var(--text);" oninput="calculateBonus()">
+                </div>
+            </div>
+            <div id="simImpact" style="margin-top: 12px; padding: 10px; background: rgba(34,197,94,0.1); border-radius: 8px; font-size: 0.8rem; display: none;">
+                <div style="display: flex; justify-content: space-between;"><span>New Weighted Achievement:</span><span id="simNewPct" style="font-weight: 700; color: var(--green);">0%</span></div>
+                <div style="display: flex; justify-content: space-between; margin-top: 4px;"><span>New Pre-Tax Bonus:</span><span id="simNewBonus" style="font-weight: 700; color: var(--green);">$0</span></div>
+                <div style="display: flex; justify-content: space-between; margin-top: 4px; color: var(--muted);"><span>Bonus Increase:</span><span id="simIncrease">+$0</span></div>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -1014,6 +1038,41 @@ function calculateBonus() {
     postEl.className = 'bavalue ' + (bonusPostTax > 0 ? '' : 'zero');
 
     document.getElementById('bonusResultBox').className = 'bonus-result ' + (totalWeightedPct >= 95 ? '' : 'no-bonus');
+
+    // What If Simulator
+    const simRoom = parseFloat(document.getElementById('simRoom')?.value) || 0;
+    const simRental = parseFloat(document.getElementById('simRental')?.value) || 0;
+    const simFnB = parseFloat(document.getElementById('simFnB')?.value) || 0;
+    
+    const simImpactEl = document.getElementById('simImpact');
+    if (simRoom > 0 || simRental > 0 || simFnB > 0) {
+        // Calculate with simulator values added
+        const newRoomNet = totalRoomNet + simRoom;
+        const newCat = totalCat + simRental + simFnB;
+        
+        const newRoomPct = roomGoal > 0 ? (newRoomNet / roomGoal) * 100 : 0;
+        const newCatPct = catGoal > 0 ? (newCat / catGoal) * 100 : 0;
+        
+        const newRoomWeighted = Math.min(newRoomPct, 150) * 0.35;
+        const newCatWeighted = Math.min(newCatPct, 150) * 0.25;
+        const newTotalPct = newRoomWeighted + newCatWeighted + kpiWeighted + hotelWeighted + bcWeighted;
+        
+        let newBonusPreTax = 0;
+        if (newTotalPct >= BONUS_CONFIG.threshold) {
+            newBonusPreTax = BONUS_CONFIG.quarterlySalary * BONUS_CONFIG.minPayoutPct * (newTotalPct / 100);
+        }
+        
+        const bonusIncrease = newBonusPreTax - bonusPreTax;
+        
+        document.getElementById('simNewPct').textContent = newTotalPct.toFixed(1) + '%';
+        document.getElementById('simNewBonus').textContent = '$' + Math.round(newBonusPreTax).toLocaleString();
+        document.getElementById('simIncrease').textContent = (bonusIncrease >= 0 ? '+' : '') + '$' + Math.round(bonusIncrease).toLocaleString();
+        document.getElementById('simIncrease').style.color = bonusIncrease > 0 ? 'var(--green)' : 'var(--muted)';
+        
+        simImpactEl.style.display = 'block';
+    } else {
+        simImpactEl.style.display = 'none';
+    }
 }
 
 // Initialize
