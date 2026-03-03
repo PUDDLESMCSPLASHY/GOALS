@@ -135,6 +135,39 @@
         .goal-row { display: grid; grid-template-columns: 80px 1fr 1fr; gap: 10px; align-items: center; }
         .goal-row .month-label { font-weight: 600; font-size: 0.85rem; }
         .goals-section-title { font-size: 0.9rem; font-weight: 600; margin: 16px 0 10px; color: var(--accent); }
+        
+        /* Bonus Calculator */
+        .bonus-calc-modal { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; position: relative; }
+        .bonus-calc-modal h2 { font-size: 1.2rem; margin-bottom: 6px; }
+        .bonus-calc-modal .subtitle { color: var(--muted); font-size: 0.8rem; margin-bottom: 20px; }
+        .bonus-section { background: #22252f; border-radius: 10px; padding: 16px; margin-bottom: 16px; }
+        .bonus-section h3 { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 12px; }
+        .bonus-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .bonus-row:last-child { border-bottom: none; }
+        .bonus-row .blabel { font-size: 0.85rem; color: var(--text); }
+        .bonus-row .weight { font-size: 0.7rem; color: var(--muted); margin-left: 6px; }
+        .bonus-row .bvalue { font-weight: 600; font-size: 0.9rem; }
+        .bonus-row .bvalue.green { color: var(--green); }
+        .bonus-row .bvalue.amber { color: var(--amber); }
+        .bonus-row .bvalue.red { color: var(--red); }
+        .toggle-container { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; }
+        .toggle-label { font-size: 0.85rem; }
+        .toggle-switch { position: relative; width: 50px; height: 26px; background: #3a3d4a; border-radius: 13px; cursor: pointer; transition: background 0.2s; }
+        .toggle-switch.active { background: var(--green); }
+        .toggle-switch::after { content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; background: white; border-radius: 50%; transition: transform 0.2s; }
+        .toggle-switch.active::after { transform: translateX(24px); }
+        .bonus-result { background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(168,85,247,0.1)); border: 1px solid var(--accent); border-radius: 12px; padding: 20px; text-align: center; }
+        .bonus-result.no-bonus { background: rgba(239,68,68,0.1); border-color: var(--red); }
+        .bonus-result .achievement-label { font-size: 0.8rem; color: var(--muted); margin-bottom: 4px; }
+        .bonus-result .achievement-value { font-size: 2rem; font-weight: 700; margin-bottom: 16px; }
+        .bonus-result .achievement-value.met { color: var(--green); }
+        .bonus-result .achievement-value.not-met { color: var(--red); }
+        .bonus-amounts { display: flex; justify-content: center; gap: 32px; }
+        .bonus-amount { text-align: center; }
+        .bonus-amount .balabel { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .bonus-amount .bavalue { font-size: 1.4rem; font-weight: 700; color: var(--green); }
+        .bonus-amount .bavalue.zero { color: var(--red); }
+        .threshold-note { font-size: 0.75rem; color: var(--muted); text-align: center; margin-top: 12px; }
     </style>
 </head>
 <body>
@@ -364,6 +397,67 @@
         </p>
         <div class="goals-grid" id="goalsGrid"></div>
         <button class="btn-save" onclick="saveGoals()" style="margin-top: 20px;">Save Goals</button>
+    </div>
+</div>
+
+<!-- Bonus Calculator Modal -->
+<div class="modal-overlay" id="bonusCalcModal">
+    <div class="bonus-calc-modal">
+        <button class="modal-close" onclick="closeBonusCalc()">✕</button>
+        <h2>💰 Bonus Calculator</h2>
+        <p class="subtitle">Q1 2026 · Group Sales Manager · $80,000 annual</p>
+
+        <div class="bonus-section">
+            <h3>📊 Your Individual Goals (from tracker)</h3>
+            <div class="bonus-row">
+                <span class="blabel">Individual Room Revenue<span class="weight">(35%)</span></span>
+                <span class="bvalue" id="bcRoomPct">0%</span>
+            </div>
+            <div class="bonus-row">
+                <span class="blabel">Individual Catering Revenue<span class="weight">(25%)</span></span>
+                <span class="bvalue" id="bcCatPct">0%</span>
+            </div>
+        </div>
+
+        <div class="bonus-section">
+            <h3>✅ Assumed at 100%</h3>
+            <div class="bonus-row">
+                <span class="blabel">KPI Sales Calls<span class="weight">(5%)</span></span>
+                <span class="bvalue green">100%</span>
+            </div>
+        </div>
+
+        <div class="bonus-section">
+            <h3>🏨 Hotel Actualized Goals (35%)</h3>
+            <div class="toggle-container">
+                <span class="toggle-label">Actualized goals met?</span>
+                <div class="toggle-switch" id="actualizedToggle" onclick="toggleActualized()"></div>
+            </div>
+            <div class="bonus-row">
+                <span class="blabel">Hotel Group Room Revenue<span class="weight">(15%)</span></span>
+                <span class="bvalue" id="bcHotelPct">0%</span>
+            </div>
+            <div class="bonus-row">
+                <span class="blabel">Banquet & Catering Actualized<span class="weight">(20%)</span></span>
+                <span class="bvalue" id="bcBCPct">0%</span>
+            </div>
+        </div>
+
+        <div class="bonus-result" id="bonusResultBox">
+            <div class="achievement-label">Weighted Achievement</div>
+            <div class="achievement-value" id="bcTotalPct">0%</div>
+            <div class="bonus-amounts">
+                <div class="bonus-amount">
+                    <div class="balabel">Pre-Tax</div>
+                    <div class="bavalue" id="bcPreTax">$0</div>
+                </div>
+                <div class="bonus-amount">
+                    <div class="balabel">Post-Tax (25%)</div>
+                    <div class="bavalue" id="bcPostTax">$0</div>
+                </div>
+            </div>
+            <div class="threshold-note">95% threshold required to earn bonus</div>
+        </div>
     </div>
 </div>
 
@@ -809,6 +903,117 @@ function saveGoals() {
     saveData();
     closeGoalsModal();
     render();
+}
+
+// ============ BONUS CALCULATOR ============
+const BONUS_CONFIG = {
+    annualSalary: 80000,
+    quarterlySalary: 20000,
+    minPayoutPct: 0.20,
+    threshold: 95,
+    taxRate: 0.25
+};
+
+let actualizedMet = false;
+let headerClickCount = 0;
+let headerClickTimer = null;
+
+// Triple-click header detection
+document.addEventListener('DOMContentLoaded', function() {
+    const header = document.querySelector('.header h1');
+    if (header) {
+        header.style.cursor = 'default';
+        header.addEventListener('click', function() {
+            headerClickCount++;
+            if (headerClickCount === 3) {
+                openBonusCalc();
+                headerClickCount = 0;
+                clearTimeout(headerClickTimer);
+            } else {
+                clearTimeout(headerClickTimer);
+                headerClickTimer = setTimeout(() => { headerClickCount = 0; }, 400);
+            }
+        });
+    }
+});
+
+function openBonusCalc() {
+    document.getElementById('bonusCalcModal').classList.add('open');
+    calculateBonus();
+}
+
+function closeBonusCalc() {
+    document.getElementById('bonusCalcModal').classList.remove('open');
+}
+
+function toggleActualized() {
+    actualizedMet = !actualizedMet;
+    document.getElementById('actualizedToggle').classList.toggle('active', actualizedMet);
+    calculateBonus();
+}
+
+function calculateBonus() {
+    // Get Q1 totals from bookings
+    const q1Months = ['jan', 'feb', 'mar'];
+    let totalRoomNet = 0, totalCat = 0;
+    
+    bookings.filter(b => q1Months.includes(b.month)).forEach(b => {
+        const gross = (b.adr || 0) * (b.roomNights || 0);
+        totalRoomNet += gross * 0.8;
+        totalCat += (b.roomRental || 0) + (b.fnb || 0) + (b.av || 0);
+    });
+
+    // Get Q1 goals
+    const roomGoal = (goals.rooms.jan || 0) + (goals.rooms.feb || 0) + (goals.rooms.mar || 0);
+    const catGoal = (goals.catering.jan || 0) + (goals.catering.feb || 0) + (goals.catering.mar || 0);
+
+    // Achievement percentages
+    const roomPct = roomGoal > 0 ? (totalRoomNet / roomGoal) * 100 : 0;
+    const catPct = catGoal > 0 ? (totalCat / catGoal) * 100 : 0;
+
+    // Weighted contributions
+    const roomWeighted = Math.min(roomPct, 150) * 0.35;
+    const catWeighted = Math.min(catPct, 150) * 0.25;
+    const kpiWeighted = 100 * 0.05;
+    const hotelWeighted = actualizedMet ? 100 * 0.15 : 0;
+    const bcWeighted = actualizedMet ? 100 * 0.20 : 0;
+
+    const totalWeightedPct = roomWeighted + catWeighted + kpiWeighted + hotelWeighted + bcWeighted;
+
+    // Update UI
+    const roomEl = document.getElementById('bcRoomPct');
+    roomEl.textContent = roomPct.toFixed(1) + '%';
+    roomEl.className = 'bvalue ' + (roomPct >= 100 ? 'green' : roomPct >= 75 ? 'amber' : 'red');
+
+    const catEl = document.getElementById('bcCatPct');
+    catEl.textContent = catPct.toFixed(1) + '%';
+    catEl.className = 'bvalue ' + (catPct >= 100 ? 'green' : catPct >= 75 ? 'amber' : 'red');
+
+    document.getElementById('bcHotelPct').textContent = actualizedMet ? '100%' : '0%';
+    document.getElementById('bcHotelPct').className = 'bvalue ' + (actualizedMet ? 'green' : 'red');
+    document.getElementById('bcBCPct').textContent = actualizedMet ? '100%' : '0%';
+    document.getElementById('bcBCPct').className = 'bvalue ' + (actualizedMet ? 'green' : 'red');
+
+    const totalEl = document.getElementById('bcTotalPct');
+    totalEl.textContent = totalWeightedPct.toFixed(1) + '%';
+    totalEl.className = 'achievement-value ' + (totalWeightedPct >= 95 ? 'met' : 'not-met');
+
+    // Calculate bonus
+    let bonusPreTax = 0;
+    if (totalWeightedPct >= BONUS_CONFIG.threshold) {
+        bonusPreTax = BONUS_CONFIG.quarterlySalary * BONUS_CONFIG.minPayoutPct * (totalWeightedPct / 100);
+    }
+    const bonusPostTax = bonusPreTax * (1 - BONUS_CONFIG.taxRate);
+
+    const preEl = document.getElementById('bcPreTax');
+    preEl.textContent = '$' + Math.round(bonusPreTax).toLocaleString();
+    preEl.className = 'bavalue ' + (bonusPreTax > 0 ? '' : 'zero');
+
+    const postEl = document.getElementById('bcPostTax');
+    postEl.textContent = '$' + Math.round(bonusPostTax).toLocaleString();
+    postEl.className = 'bavalue ' + (bonusPostTax > 0 ? '' : 'zero');
+
+    document.getElementById('bonusResultBox').className = 'bonus-result ' + (totalWeightedPct >= 95 ? '' : 'no-bonus');
 }
 
 // Initialize
