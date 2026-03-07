@@ -1079,8 +1079,49 @@ function calculateBonus() {
 // Auto-unlock if embedded in Kelphi
 if (window.parent !== window) {
     unlock();
+    // Check for pending bookings from Kelphi
+    setTimeout(processPendingBookings, 500);
 }
 buildTabs();
+
+// Process pending bookings from Kelphi localStorage
+function processPendingBookings() {
+    const pending = JSON.parse(localStorage.getItem('kelphi_pendingBookings') || '[]');
+    if (pending.length === 0) return;
+    
+    pending.forEach(lead => {
+        // Check if booking already exists
+        const existing = bookings.find(b => b.leadId === lead.id);
+        if (existing) return;
+        
+        // Get arrival month
+        let arrivalMonth = 'jan';
+        if (lead.arrival) {
+            const monthIndex = new Date(lead.arrival + 'T12:00:00').getMonth();
+            arrivalMonth = MONTHS[monthIndex];
+        }
+        
+        // Create new booking
+        const booking = {
+            id: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+            leadId: lead.id,
+            groupName: lead.bookingName || lead.account || 'Untitled',
+            segment: lead.segment || 'corporate',
+            arrivalMonth: arrivalMonth,
+            roomRevenue: lead.roomRevenue || 0,
+            cateringRevenue: lead.cateringRevenue || 0,
+            type: lead.type === 'rooms' ? 'rooms' : (lead.type === 'events' ? 'catering' : 'both'),
+            createdAt: new Date().toISOString()
+        };
+        
+        bookings.push(booking);
+    });
+    
+    // Clear pending queue and save
+    localStorage.removeItem('kelphi_pendingBookings');
+    saveData();
+    render();
+}
 
 // Listen for messages from Kelphi (when embedded)
 window.addEventListener('message', function(event) {
