@@ -1076,6 +1076,10 @@ function calculateBonus() {
 }
 
 // Initialize
+// Auto-unlock if embedded in Kelphi
+if (window.parent !== window) {
+    unlock();
+}
 buildTabs();
 
 // Listen for messages from Kelphi (when embedded)
