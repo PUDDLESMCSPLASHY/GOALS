@@ -1084,6 +1084,19 @@ buildTabs();
 
 // Listen for messages from Kelphi (when embedded)
 window.addEventListener('message', function(event) {
+    // Send goals data to Kelphi when requested
+    if (event.data && event.data.type === 'REQUEST_GOALS_DATA') {
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'GOALS_DATA',
+                data: {
+                    goals: goals,
+                    bookings: bookings
+                }
+            }, '*');
+        }
+    }
+    
     if (event.data && event.data.type === 'ADD_BOOKING') {
         const lead = event.data.data;
         
