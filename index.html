@@ -1077,6 +1077,55 @@ function calculateBonus() {
 
 // Initialize
 buildTabs();
+
+// Listen for messages from Kelphi (when embedded)
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'ADD_BOOKING') {
+        const lead = event.data.data;
+        
+        // Check if booking already exists for this lead
+        const existing = bookings.find(b => b.leadId === lead.id);
+        if (existing) {
+            // Update existing booking
+            existing.groupName = lead.bookingName || lead.account || 'Untitled';
+            existing.segment = lead.segment || 'corporate';
+            existing.roomRevenue = lead.roomRevenue || 0;
+            existing.cateringRevenue = lead.cateringRevenue || 0;
+            saveData();
+            render();
+            return;
+        }
+        
+        // Get arrival month
+        let arrivalMonth = 'jan';
+        if (lead.arrival) {
+            const monthIndex = new Date(lead.arrival + 'T12:00:00').getMonth();
+            arrivalMonth = MONTHS[monthIndex];
+        }
+        
+        // Create new booking
+        const booking = {
+            id: Date.now().toString(),
+            leadId: lead.id,
+            groupName: lead.bookingName || lead.account || 'Untitled',
+            segment: lead.segment || 'corporate',
+            arrivalMonth: arrivalMonth,
+            roomRevenue: lead.roomRevenue || 0,
+            cateringRevenue: lead.cateringRevenue || 0,
+            type: lead.type === 'rooms' ? 'rooms' : (lead.type === 'events' ? 'catering' : 'both'),
+            createdAt: new Date().toISOString()
+        };
+        
+        bookings.push(booking);
+        saveData();
+        render();
+        
+        // Notify Kelphi
+        if (window.parent !== window) {
+            window.parent.postMessage({ type: 'BOOKING_ADDED', bookingId: booking.id, leadId: lead.id }, '*');
+        }
+    }
+});
 </script>
 </body>
 </html>
