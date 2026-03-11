@@ -93,7 +93,13 @@
         /* Table */
         .bookings-section { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; }
         .bookings-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
-        .bookings-table th { text-align: left; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; }.bookings-table td { padding: 10px; border-bottom: 1px solid #1f2230; }
+        .bookings-table th { text-align: left; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--border); font-size: 0.75rem; text-transform: uppercase; }
+        .bookings-table th.sortable { cursor: pointer; user-select: none; }
+        .bookings-table th.sortable:hover { color: var(--accent); }
+        .bookings-table th.sortable::after { content: ' ↕'; opacity: 0.4; }
+        .bookings-table th.sortable.asc::after { content: ' ↑'; opacity: 1; }
+        .bookings-table th.sortable.desc::after { content: ' ↓'; opacity: 1; }
+        .bookings-table td { padding: 10px; border-bottom: 1px solid #1f2230; }
         .segment-badge { padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; }
         .segment-badge.smerf { background: rgba(168,85,247,0.15); color: var(--purple); }
         .segment-badge.corporate { background: rgba(59,130,246,0.15); color: var(--accent); }
@@ -556,6 +562,8 @@ let goals = JSON.parse(localStorage.getItem('htl_goals')) || JSON.parse(JSON.str
 let bookings = JSON.parse(localStorage.getItem('htl_bookings') || '[]');
 let currentView = 'q1';
 let editingId = null;
+let sortColumn = null;
+let sortDirection = 'asc';
 
 const COLORS_ROOMS = ['#22c55e','#16a34a','#15803d','#166534','#4ade80','#34d399','#2dd4bf','#06b6d4','#0ea5e9','#3b82f6','#6366f1','#8b5cf6','#a855f7','#c084fc','#d946ef'];
 const COLORS_CAT = ['#ec4899','#f43f5e','#f97316','#f59e0b','#eab308','#fb923c','#fbbf24','#facc15','#a3e635','#84cc16','#22d3ee','#67e8f9','#e879f9','#c084fc','#fb7185'];
@@ -718,12 +726,36 @@ function renderTable(items) {
         return;
     }
     
-    let h = '<table class="bookings-table"><thead><tr><th>Group</th><th>Type</th><th>Segment</th><th>Room Rev (Net)</th><th>Catering Rev</th><th>Month</th><th></th></tr></thead><tbody>';
+    // Sort items if a sort column is selected
+    let sortedItems = [...items];
+    if (sortColumn === 'group') {
+        sortedItems.sort((a, b) => {
+            const cmp = (a.groupName || '').localeCompare(b.groupName || '');
+            return sortDirection === 'asc' ? cmp : -cmp;
+        });
+    } else if (sortColumn === 'dateDefinite') {
+        sortedItems.sort((a, b) => {
+            const dateA = a.closeDate || '';
+            const dateB = b.closeDate || '';
+            const cmp = dateA.localeCompare(dateB);
+            return sortDirection === 'asc' ? cmp : -cmp;
+        });
+    }
     
-    items.forEach(b => {
+    const groupSortClass = sortColumn === 'group' ? (sortDirection === 'asc' ? 'asc' : 'desc') : '';
+    const dateSortClass = sortColumn === 'dateDefinite' ? (sortDirection === 'asc' ? 'asc' : 'desc') : '';
+    
+    let h = '<table class="bookings-table"><thead><tr>';
+    h += '<th class="sortable ' + groupSortClass + '" onclick="toggleSort(\'group\')">Group</th>';
+    h += '<th>Type</th><th>Segment</th><th>Room Rev (Net)</th><th>Catering Rev</th><th>Month</th>';
+    h += '<th class="sortable ' + dateSortClass + '" onclick="toggleSort(\'dateDefinite\')">Date Definite</th>';
+    h += '<th></th></tr></thead><tbody>';
+    
+    sortedItems.forEach(b => {
         const rN = (b.adr || 0) * (b.roomNights || 0) * 0.8;
         const cR = (b.roomRental || 0) + (b.fnb || 0) + (b.av || 0);
         const typeLabel = b.type === 'rooms' ? 'Rooms' : b.type === 'events' ? 'Event' : 'Both';
+        const dateDefStr = b.closeDate ? new Date(b.closeDate + 'T12:00:00').toLocaleDateString('en-US', {month: 'short', day: 'numeric'}) : '—';
         
         h += '<tr>';
         h += '<td><strong>' + b.groupName + '</strong></td>';
@@ -732,12 +764,23 @@ function renderTable(items) {
         h += '<td>' + (b.type !== 'events' ? fmt(rN) : '—') + '</td>';
         h += '<td>' + (cR > 0 ? fmt(cR) : '—') + '</td>';
         h += '<td style="color:var(--muted)">' + MONTH_NAMES[b.month] + '</td>';
+        h += '<td style="color:var(--muted)">' + dateDefStr + '</td>';
         h += '<td><button class="action-btn" onclick="editBooking(\'' + b.id + '\')">✏️</button>';
         h += '<button class="action-btn delete" onclick="deleteBooking(\'' + b.id + '\')">✕</button></td>';
         h += '</tr>';
     });
     
     body.innerHTML = h + '</tbody></table>';
+}
+
+function toggleSort(column) {
+    if (sortColumn === column) {
+        sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+    } else {
+        sortColumn = column;
+        sortDirection = 'asc';
+    }
+    renderBookingsLog();
 }
 
 // Modal Functions
