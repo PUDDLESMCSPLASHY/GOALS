@@ -1082,10 +1082,11 @@ function calculateBonus() {
 
     document.getElementById('bonusResultBox').className = 'bonus-result ' + (totalWeightedPct >= 95 ? '' : 'no-bonus');
 
-    // What If Simulator
-    const simRoom = parseFloat(document.getElementById('simRoom')?.value) || 0;
-    const simRental = parseFloat(document.getElementById('simRental')?.value) || 0;
-    const simFnB = parseFloat(document.getElementById('simFnB')?.value) || 0;
+    // What If Simulator - strip $ and commas from input
+    const cleanNum = (id) => parseFloat((document.getElementById(id)?.value || '').replace(/[$,]/g, '')) || 0;
+    const simRoom = cleanNum('simRoom');
+    const simRental = cleanNum('simRental');
+    const simFnB = cleanNum('simFnB');
     
     const simImpactEl = document.getElementById('simImpact');
     if (simRoom > 0 || simRental > 0 || simFnB > 0) {
