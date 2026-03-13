@@ -1038,9 +1038,9 @@ function calculateBonus() {
     const roomPct = roomGoal > 0 ? (totalRoomNet / roomGoal) * 100 : 0;
     const catPct = catGoal > 0 ? (totalCat / catGoal) * 100 : 0;
 
-    // Weighted contributions
-    const roomWeighted = Math.min(roomPct, 150) * 0.35;
-    const catWeighted = Math.min(catPct, 150) * 0.25;
+    // Weighted contributions (UNCAPPED per bonus plan)
+    const roomWeighted = roomPct * 0.35;
+    const catWeighted = catPct * 0.25;
     const kpiWeighted = 100 * 0.05;
     const hotelWeighted = actualizedMet ? 100 * 0.15 : 0;
     const bcWeighted = actualizedMet ? 100 * 0.20 : 0;
@@ -1097,8 +1097,8 @@ function calculateBonus() {
         const newRoomPct = roomGoal > 0 ? (newRoomNet / roomGoal) * 100 : 0;
         const newCatPct = catGoal > 0 ? (newCat / catGoal) * 100 : 0;
         
-        const newRoomWeighted = Math.min(newRoomPct, 150) * 0.35;
-        const newCatWeighted = Math.min(newCatPct, 150) * 0.25;
+        const newRoomWeighted = newRoomPct * 0.35;
+        const newCatWeighted = newCatPct * 0.25;
         const newTotalPct = newRoomWeighted + newCatWeighted + kpiWeighted + hotelWeighted + bcWeighted;
         
         let newBonusPreTax = 0;
